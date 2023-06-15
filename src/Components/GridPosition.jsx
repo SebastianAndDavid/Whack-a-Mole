@@ -2,7 +2,9 @@
 export default function GridPosition({ style, setScore, score, i, position }) {
   function incrementScore() {
     if (i === position) {
-      setScore(score++);
+      setScore(score + 1);
+    } else {
+      setScore(score - 1);
     }
   }
   return (
@@ -10,7 +12,6 @@ export default function GridPosition({ style, setScore, score, i, position }) {
       style={style}
       onClick={() => {
         incrementScore();
-        console.log("clicking");
       }}
     ></div>
   );

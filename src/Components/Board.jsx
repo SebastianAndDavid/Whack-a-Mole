@@ -12,7 +12,7 @@ export default function Board() {
       setLit(true);
       setTimeout(() => {
         setLit(false);
-      }, 500);
+      }, 2000);
     }
   }
 
