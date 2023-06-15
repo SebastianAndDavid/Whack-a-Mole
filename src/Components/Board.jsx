@@ -2,11 +2,10 @@ import { useEffect, useState } from "react";
 import "./Components.css";
 import GridPosition from "./GridPosition";
 export default function Board() {
-  const [position, setPosition] = useState(1);
+  const [position, setPosition] = useState(null);
   const [lit, setLit] = useState(false);
   const [gameStart, setGameStart] = useState(false);
   const [score, setScore] = useState(0);
-
   // function createRandomPosition() {
   //   setPosition(Math.floor(Math.random() * 25));
   // }
@@ -23,16 +22,16 @@ export default function Board() {
 
   function randomLitUpTileTimeKeeper() {
     if (gameStart) {
-      setPosition(Math.floor(Math.random() * 25));
       setLit(true);
       setTimeout(() => {
         setLit(false);
-      }, 5000);
+      }, 500);
     }
   }
 
   useEffect(() => {
     randomLitUpTileTimeKeeper();
+    setPosition(Math.floor(Math.random() * 25));
   }, [lit, gameStart]);
 
   return (
@@ -58,22 +57,35 @@ export default function Board() {
           // does the index match the randomPosition, then also send down inline styles to the GridPosition
           // console.log("i", i);
           // console.log("position", position);
-          // return i === position ? (
-          //   <GridPosition key={x + i} style={inLineStyle} />
-          // ) : (
-          //   <GridPosition key={x + i} />
-          // );
-          const inLineStyle = i === position ? { backgroundColor: "red" } : {};
-          return (
+          return i === position ? (
             <GridPosition
               key={x + i}
-              style={inLineStyle}
+              style={{ backgroundColor: "red" }}
+              setScore={setScore}
+              score={score}
+              i={i}
+              position={position}
+            />
+          ) : (
+            <GridPosition
+              key={x + i}
               setScore={setScore}
               score={score}
               i={i}
               position={position}
             />
           );
+          // const inLineStyle = i === position ? { backgroundColor: "red" } : {};
+          // return (
+          //   <GridPosition
+          //     key={x + i}
+          //     style={inLineStyle}
+          //     setScore={setScore}
+          //     score={score}
+          //     i={i}
+          //     position={position}
+          //   />
+          // );
         })}
       </div>
     </>

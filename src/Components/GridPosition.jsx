@@ -12,8 +12,6 @@ export default function GridPosition({ style, setScore, score, i, position }) {
         incrementScore();
         console.log("clicking");
       }}
-    >
-      Hi
-    </div>
+    ></div>
   );
 }
