@@ -1,46 +1,83 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Components.css";
 import GridPosition from "./GridPosition";
 export default function Board() {
-  const [position, setPosition] = useState(1);
+  const [position, setPosition] = useState(null);
+  const [lit, setLit] = useState(false);
+  const [gameStart, setGameStart] = useState(false);
+  const [score, setScore] = useState(0);
+  const [randomTime, setRandomTime] = useState(1000);
 
-  const [inLineStyle, setInLineStyle] = useState(null);
+  function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    setRandomTime(Math.floor(Math.random() * (max - min) + min));
+  }
 
-  function createRandomPosition() {
+  // console.log(getRandomInt(500, 3000));
+
+  function randomLitUpTileTimeKeeper() {
+    if (gameStart) {
+      setLit(true);
+      setRandomTime(getRandomInt(2000, 5000));
+    }
+  }
+
+  useEffect(() => {
+    if (lit) {
+      const timeoutId = setTimeout(() => {
+        setLit(false);
+      }, randomTime);
+      return () => {
+        clearTimeout(timeoutId);
+      };
+    }
+  }, [lit, randomTime]);
+
+  useEffect(() => {
+    randomLitUpTileTimeKeeper();
     setPosition(Math.floor(Math.random() * 25));
-  }
-
-  const positionArray = [
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-    22, 23, 24, 25,
-  ];
-
-  function changeColor() {
-    setInLineStyle({ backgroundColor: "red" });
-    return inLineStyle;
-  }
+  }, [gameStart]);
 
   return (
     <>
       <button
         onClick={() => {
-          createRandomPosition();
-          changeColor();
+          setGameStart(true);
         }}
       >
-        Click
+        Start the game
       </button>
+      <button
+        onClick={() => {
+          setGameStart(false);
+          setScore(0);
+        }}
+      >
+        Stop the game
+      </button>
+      Your score: {score}
       <div className="grid-container">
-        {positionArray.map((x, i) => {
-          // does the index match the randomPosition, then also send down inline styles to the GridPosition
-          console.log("i", i);
-          console.log("position", position);
-          return i === position ? (
-            <GridPosition key={x + i} />
+        {Array.from({ length: 25 }, (_, i) =>
+          i === position ? (
+            <GridPosition
+              key={i}
+              style={{ backgroundColor: "red" }}
+              setScore={setScore}
+              score={score}
+              i={i}
+              position={position}
+            />
           ) : (
-            <GridPosition key={x + i} style={inLineStyle} />
-          );
-        })}
+            <GridPosition
+              key={i}
+              setScore={setScore}
+              score={score}
+              i={i}
+              position={position}
+            />
+          )
+        )}
       </div>
     </>
   );
