@@ -6,20 +6,38 @@ export default function Board() {
   const [lit, setLit] = useState(false);
   const [gameStart, setGameStart] = useState(false);
   const [score, setScore] = useState(0);
+  const [randomTime, setRandomTime] = useState(1000);
+
+  function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    setRandomTime(Math.floor(Math.random() * (max - min) + min));
+  }
+
+  // console.log(getRandomInt(500, 3000));
 
   function randomLitUpTileTimeKeeper() {
     if (gameStart) {
       setLit(true);
-      setTimeout(() => {
-        setLit(false);
-      }, 2000);
+      setRandomTime(getRandomInt(2000, 5000));
     }
   }
 
   useEffect(() => {
+    if (lit) {
+      const timeoutId = setTimeout(() => {
+        setLit(false);
+      }, randomTime);
+      return () => {
+        clearTimeout(timeoutId);
+      };
+    }
+  }, [lit, randomTime]);
+
+  useEffect(() => {
     randomLitUpTileTimeKeeper();
     setPosition(Math.floor(Math.random() * 25));
-  }, [lit, gameStart]);
+  }, [gameStart]);
 
   return (
     <>
